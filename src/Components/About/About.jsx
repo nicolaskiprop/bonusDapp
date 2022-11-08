@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { GlobalContext } from '../../context';
 import { useAccount } from 'wagmi'
 import Select from '@mui/material/Select';
-import { Box, Button, FormControl, MenuItem, Typography } from '@mui/material'
+import { Box, Button, FormControl, MenuItem } from '@mui/material'
 
 
 function About() {
@@ -22,12 +22,14 @@ function About() {
 
 
 
-    //console.log("details  here", details)
+    console.log("details  here", details)
 
     useEffect(() => {
 
         tokenDetails(address)
             .then((token) => {
+
+                console.log("token", token)
 
                 //filter out the tokens to specific symbol and balance
                 let newDetails = token.filter(function (detail) {

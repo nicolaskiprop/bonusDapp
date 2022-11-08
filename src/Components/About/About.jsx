@@ -31,6 +31,8 @@ function About() {
         tokenDetails(address)
             .then((token) => {
 
+                console.log("token", token)
+
                 //filter out the tokens to specific symbol and balance
                 let newDetails = token.filter(function (detail) {
                     return detail.symbol === "CALO";
@@ -63,7 +65,7 @@ function About() {
                             sx={{ display: 'flex', maxHeight: '100px', color: '#fff' }}
                             variant='contained'
                             size='small'
-                            >
+                        >
                             History
                         </Button>
                     </HashLink>

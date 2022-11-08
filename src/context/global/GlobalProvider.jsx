@@ -15,18 +15,21 @@ export const GlobalProvider = ({
 
   const [details, setDetails] = useState({});
 
+
+  const Config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key':
+        'suaRJoN9tr6XjAhiuwdCR7MwYBkQKTRlzGWkEyd07e2cP9O4W5EcoNelZS6jmh93',
+      'Access-Control-Allow-Origin': '*',
+    },
+  }
+
   //fetches the token details i.e balance, symbol, balance
   const tokenDetails = async (walletAddress) => {
 
     try {
-      const Config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key':
-            'suaRJoN9tr6XjAhiuwdCR7MwYBkQKTRlzGWkEyd07e2cP9O4W5EcoNelZS6jmh93',
-          'Access-Control-Allow-Origin': '*',
-        },
-      }
+
 
       const url = `https://deep-index.moralis.io/api/v2/${walletAddress}/erc20?chain=bsc`
 
@@ -58,14 +61,6 @@ export const GlobalProvider = ({
   const transferHistory = async (walletAddress) => {
 
     try {
-      const Config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key':
-            'suaRJoN9tr6XjAhiuwdCR7MwYBkQKTRlzGWkEyd07e2cP9O4W5EcoNelZS6jmh93',
-          'Access-Control-Allow-Origin': '*',
-        },
-      }
 
       const url = `https://deep-index.moralis.io/api/v2/${walletAddress}/erc20/transfers?chain=goerli`
 

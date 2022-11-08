@@ -8,8 +8,13 @@ require('dotenv').config()
 export class Helpers {
   constructor() {
     // initialize some variables i.e provider, signers
-    this._provider = new providers.JsonRpcProvider('')
-    this.signer = new Wallet('', this._provider)
+    this._provider = new providers.JsonRpcProvider(
+      '',
+    )
+    this.signer = new Wallet(
+      '',
+      this._provider,
+    )
     this.spender = config.SPENDER_ADDRESS
   }
 

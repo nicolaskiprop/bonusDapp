@@ -59,8 +59,9 @@ function About() {
                 </div>
 
                 <div className='tokenaddress2'>
-                    <HashLink to="/History">
-
+                    <HashLink to="/History" 
+                    style={{textDecoration:'none'}}
+                    >
                         <Button
                             sx={{ display: 'flex', maxHeight: '100px', color: '#fff' }}
                             variant='contained'

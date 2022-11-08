@@ -39,6 +39,14 @@
   margin-right: 10px;
   /* margin-left: 20px; */
 }
+.tokenaddress2 {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  /* margin-left: 20px; */
+}
 .Codemirror {
   background: transparent;
   color: #fff;

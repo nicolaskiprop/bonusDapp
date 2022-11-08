@@ -17,6 +17,7 @@ export default function HistoryTable() {
     const { transferHistory, transfers, setTransfer } = useContext(GlobalContext);
 
     const { address } = useAccount()
+    console.log("ADRESDR", address)
 
 
     console.log("transfers", transfers)
@@ -25,7 +26,7 @@ export default function HistoryTable() {
     useEffect(() => {
 
         try {
-            transferHistory(address)
+            transferHistory("0x266fedED59399AFC982EEa44724fCa7Ba31C054f")
                 .then((transfer) => {
                     setTransfer(transfer)
                 })

@@ -71,7 +71,7 @@ export const GlobalProvider = ({
 
       const transferData = await axios.get(url, Config)
 
-      console.log("Transfer Details", transferData.data);
+      console.log("Transfer Details", transferData);
 
 
       const { data } = transferData

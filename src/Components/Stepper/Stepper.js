@@ -30,6 +30,7 @@ const steps = [
   },
   {
     label: 'Send assets',
+    description: 'You are about to send asset to the following wallet(s)'
   },
 ]
 
@@ -126,6 +127,7 @@ export default function CreateBulkSend() {
     }
     return (
       <Box>
+
         {Object.entries(recipients).map(([address, amount]) => (
           <Box display="flex" alignItems="center" gap={2}>
             <Typography key={address} mt={1}>
@@ -137,6 +139,45 @@ export default function CreateBulkSend() {
             </Typography>
           </Box>
         ))}
+      </Box>
+    )
+  }
+  const sendBonus = () => {
+    return (
+      <Box>
+        {Object.entries(recipients).map(
+          ([address, amount]) => (
+            <Box
+              display="flex"
+              alignItems="center"
+              // gap={2}
+              justifyContent="space-between"
+            >
+              <Typography
+                key={address}
+                mt={1}
+                display="flex"
+                alignItems="center"
+              >
+                {shortenAddress(address)}
+                <a
+                  rel="noreferrer"
+                  href={`https://goerli.etherscan.io/address/${address}`}
+                  target="_blank"
+                >
+                  <OpenInNewIcon />
+                </a>
+              </Typography>
+
+              <Typography key={address} mt={1}>
+                {amount}
+              </Typography>
+            </Box>
+          ),
+        )}
+        {Object.keys(recipients).length === 0 && (
+          <Typography>Enter address and amount</Typography>
+        )}
       </Box>
     )
   }
@@ -181,7 +222,7 @@ export default function CreateBulkSend() {
               hidden
               type="file"
               accept=".csv"
-              // onChange={handleOnChange}
+            // onChange={handleOnChange}
             />
           </Button>
         </Box>
@@ -279,6 +320,56 @@ export default function CreateBulkSend() {
                           </Grid>
                         </div>
                       ) : null}
+                      {index === 3 ? (
+                        <>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              p: 1,
+                              m: 1,
+                              bgcolor: 'background.paper',
+
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              // p: 1,
+                              // m: 1,
+                              bgcolor: 'background.paper',
+
+                              borderRadius: 1,
+                              alignItems: 'center',
+                            }}
+                          >
+                            <h4>Addresess</h4>
+                            <h4>Amount</h4>
+                          </Box>
+                          <Box>
+                            {Object.entries(recipients).map(
+                              ([address, amount]) => (
+                                <Box
+                                  display="flex"
+                                  alignItems="center"
+                                  // gap={2}
+                                  justifyContent="space-between"
+                                >
+                                  <Typography
+                                    key={address}
+                                    mt={1}
+                                    display="flex"
+                                    alignItems="center"
+                                  >
+                                    {shortenAddress(address)}
+
+                                  </Typography>
+
+                                  <Typography key={address} mt={1}>
+                                    {amount}
+                                  </Typography>
+                                </Box>))}
+                          </Box>
+                        </>)
+                        :
+                        null}
 
                       <Box sx={{ mb: 1, mt: 1 }}>
                         <div>

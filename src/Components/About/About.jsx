@@ -6,6 +6,8 @@ import { GlobalContext } from '../../context';
 import { useAccount } from 'wagmi'
 import Select from '@mui/material/Select';
 import { Box, Button, FormControl, MenuItem, Typography } from '@mui/material'
+import { HashLink } from 'react-router-hash-link';
+
 
 
 function About() {
@@ -22,12 +24,14 @@ function About() {
 
 
 
-    //console.log("details  here", details)
+    console.log("details  here", details)
 
     useEffect(() => {
 
         tokenDetails(address)
             .then((token) => {
+
+                console.log("token", token)
 
                 //filter out the tokens to specific symbol and balance
                 let newDetails = token.filter(function (detail) {
@@ -47,17 +51,27 @@ function About() {
 
     return (
         <div>
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
                 <div className='tokenaddress'>
                     <h6 >Token Address</h6>
 
                 </div>
 
-                <Box>
-                    <Button
-                        sx={{ display: 'flex', maxHeight: '100px' }}>History </Button>
-                </Box>
+                <div className='tokenaddress2'>
+                    <HashLink to="/History" 
+                    style={{textDecoration:'none'}}
+                    >
+                        <Button
+                            sx={{ display: 'flex', maxHeight: '100px', color: '#fff' }}
+                            variant='contained'
+                            size='small'
+                        >
+                            History
+                        </Button>
+                    </HashLink>
+
+                </div>
 
 
             </div>

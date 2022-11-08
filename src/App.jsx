@@ -1,18 +1,14 @@
 import React from 'react'
-import './App.css';
-import DrawerAppBar from './Components/Appbar/DrawerAppBar';
-import VerticalLinearStepper from './Components/Stepper/Stepper';
-import { Container } from '@mui/material';
-import "@rainbow-me/rainbowkit/styles.css";
-import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { Route, Routes } from 'react-router-dom';
+import HistoryTable from './Components/Table/Table';
+import Home from './pages/Home';
 import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
-import About from './Components/About/About';
+import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import "@rainbow-me/rainbowkit/styles.css";
 
-require('dotenv').config()
 
-//configuring the wagmi client needed configurations
 
 const { chains, provider } = configureChains(
   [chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum, chain.goerli],
@@ -29,35 +25,23 @@ const wagmiClient = createClient({
   connectors,
   provider,
 });
-
-
 function App() {
   return (
-
-    <>
+    <div>
       <WagmiConfig client={wagmiClient}>
-        <RainbowKitProvider chains={chains}>
-          <DrawerAppBar />
-          <div className="App">
-            <header className="App-header">
-              <Container maxWidth='lg'>
-                <div style={{ border: "1px solid white", borderRadius: '20px' }}>
-                  <About />
-                  <div>
-                    <VerticalLinearStepper />
-                  </div>
-                </div>
+      <RainbowKitProvider chains={chains}>
 
-              </Container>
-            </header>
-          </div>
 
-        </RainbowKitProvider>
+      <Routes>
+        <Route path='/' element={<Home />}/>
+        <Route path='/History' element={<HistoryTable />} />
+      </Routes>
+      </RainbowKitProvider>
+
       </WagmiConfig>
 
-    </>
-
-  );
+    </div>
+  )
 }
 
-export default App;
+export default App

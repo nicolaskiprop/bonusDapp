@@ -1,9 +1,10 @@
 .App {
   text-align: center;
+  margin-top: 20px;
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 60vmin;
   pointer-events: none;
 }
 
@@ -23,16 +24,31 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+.typography {
+  font-size: calc(10px + 1vmin);
+}
 
 .App-link {
   color: #61dafb;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.tokenaddress {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  /* margin-left: 20px; */
+}
+.Codemirror {
+  background: transparent;
+  color: #fff;
+  z-index: 1;
+  border: 1px solid #415d9f;
+  max-height: 140px;
+  height: 100%;
+}
+.select {
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 10px;
 }

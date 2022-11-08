@@ -5,7 +5,9 @@ import { useContext } from 'react';
 import { GlobalContext } from '../../context';
 import { useAccount } from 'wagmi'
 import Select from '@mui/material/Select';
-import { Box, Button, FormControl, MenuItem } from '@mui/material'
+import { Box, Button, FormControl, MenuItem, Typography } from '@mui/material'
+import { HashLink } from 'react-router-hash-link';
+
 
 
 function About() {
@@ -49,17 +51,26 @@ function About() {
 
     return (
         <div>
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
                 <div className='tokenaddress'>
                     <h6 >Token Address</h6>
 
                 </div>
 
-                <Box>
-                    <Button
-                        sx={{ display: 'flex', maxHeight: '100px' }}>History </Button>
-                </Box>
+                <div className='tokenaddress2'>
+                    <HashLink to="/History">
+
+                        <Button
+                            sx={{ display: 'flex', maxHeight: '100px', color: '#fff' }}
+                            variant='contained'
+                            size='small'
+                        >
+                            History
+                        </Button>
+                    </HashLink>
+
+                </div>
 
 
             </div>

@@ -1,4 +1,4 @@
-require('dotenv').config()
+import 'dotenv/config'
 
 export const config = {
   /**
@@ -9,7 +9,7 @@ export const config = {
    * @description JSON RPC endpoint
    * @type {string}
    */
-  JSON_RPC: '',
+  JSON_RPC: process.env.JSON_RPC,
 
   /**
    * @description WSS_URL is the websocket endpoint of the WSS  endpoint
@@ -29,6 +29,12 @@ export const config = {
   WBNB_ADDRESS: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
 
   /**
+   * @description TOKEN_ADDRESS is the address of the token that will be  sent
+   */
+
+  TOKEN_TRANSFER: '0x871422643E116C364Db4f0Bc0dEB5202a624D2E9',
+
+  /**
    * @description account address i.e WALLET_ADDRESS
    * @type {string}
    */
@@ -39,5 +45,5 @@ export const config = {
    * @description SPENDER_ADDRESS is the address of the contract that will be used to spend the users tokens
    */
 
-  SPENDER_ADDRESS: '0x21d56d126230d9ed78a042b044a9cf3f2ee25fc2', //smart contract to be approve amounts
+  SPENDER_ADDRESS: '0x871422643E116C364Db4f0Bc0dEB5202a624D2E9', //smart contract to be approve amounts
 }

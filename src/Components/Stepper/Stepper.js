@@ -10,10 +10,12 @@ import { Box, Chip, Container, Divider, Grid } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
-import { ethers, utils } from 'ethers'
+import { Contract, ethers, utils } from 'ethers'
 import Recipient from './Recipient'
 import { Helpers } from '../helpers/utils'
 import { useSigner } from 'wagmi'
+import { BULK_SEND_ABI } from '../helpers/constants/bulksendABI'
+import { config } from '../helpers/config/config'
 
 const steps = [
   {
@@ -30,7 +32,7 @@ const steps = [
   },
   {
     label: 'Send assets',
-    description: 'You are about to send asset to the following wallet(s)'
+    description: 'You are about to send asset to the following wallet(s)',
   },
 ]
 
@@ -54,13 +56,13 @@ export default function CreateBulkSend() {
   //States
   const [activeStep, setActiveStep] = React.useState(0)
   const [file, setFile] = useState()
+  const [addresses, setAddresses] = useState([])
+  const [amount, setAmount] = useState(0)
 
   const { recipients } = useContext(GlobalContext)
 
   // load and read from a csv file
   const fileReader = new FileReader()
-
-  // console.log('recipients', recipients
 
   //instatiate helpers
   const HelpersWrapper = new Helpers()
@@ -103,31 +105,44 @@ export default function CreateBulkSend() {
 
   const handleSendTokens = async () => {
     try {
-      const data = Object.entries(recipients)
-        .map(([addr, amt]) => ({
-          [addr]: utils.parseUnits(amt, 18),
-        }))
-        .forEach(async (item) => {
-          const addr = Object.keys(item)[0]
-          const amt = Object.values(item)[0]
+      const data = Object.entries(recipients).map(([addr, amt]) => ({
+        [addr]: utils.parseUnits(amt, 18),
+      }))
 
-          const contract = HelpersWrapper.sendContract(signer)
+      const contract2 = new Contract(
+        config.TOKEN_TRANSFER,
+        BULK_SEND_ABI,
+        // console.log('Here is the data', addr)
+        signer,
+      )
 
-          const sendTokens = await contract.batchTransfer(
-            '0x5c46ec0dd2af140c24a194d1a091953dec44f05c',
-            addr,
-            amt,
-          )
+      let addresses = []
+      let amounts = []
 
-          console.log('addr', addr)
-          console.log('amt', amt)
-        })
+      for (let i = 0; i < data.length; i++) {
+        const address = Object.keys(data[i])[0]
+        const amount = Object.values(data[i])[0]
+
+        addresses.push(address)
+        amounts.push(amount)
+      }
+
+      console.log('Here is the details from loop', addresses)
+      console.log('Here is the amounts from loop', amounts)
+
+      const send = await contract2.batchTransfer(
+        '0x210f4F7a092CCdc3487B8dAB8e317A6E29aeA720',
+        addresses,
+        amounts,
+        {
+          gasLimit: 1000000,
+        },
+      )
     } catch (error) {
       console.log('Error sending tokens', error)
     }
     return (
       <Box>
-
         {Object.entries(recipients).map(([address, amount]) => (
           <Box display="flex" alignItems="center" gap={2}>
             <Typography key={address} mt={1}>
@@ -145,36 +160,29 @@ export default function CreateBulkSend() {
   const sendBonus = () => {
     return (
       <Box>
-        {Object.entries(recipients).map(
-          ([address, amount]) => (
-            <Box
-              display="flex"
-              alignItems="center"
-              // gap={2}
-              justifyContent="space-between"
-            >
-              <Typography
-                key={address}
-                mt={1}
-                display="flex"
-                alignItems="center"
+        {Object.entries(recipients).map(([address, amount]) => (
+          <Box
+            display="flex"
+            alignItems="center"
+            // gap={2}
+            justifyContent="space-between"
+          >
+            <Typography key={address} mt={1} display="flex" alignItems="center">
+              {shortenAddress(address)}
+              <a
+                rel="noreferrer"
+                href={`https://goerli.etherscan.io/address/${address}`}
+                target="_blank"
               >
-                {shortenAddress(address)}
-                <a
-                  rel="noreferrer"
-                  href={`https://goerli.etherscan.io/address/${address}`}
-                  target="_blank"
-                >
-                  <OpenInNewIcon />
-                </a>
-              </Typography>
+                <OpenInNewIcon />
+              </a>
+            </Typography>
 
-              <Typography key={address} mt={1}>
-                {amount}
-              </Typography>
-            </Box>
-          ),
-        )}
+            <Typography key={address} mt={1}>
+              {amount}
+            </Typography>
+          </Box>
+        ))}
         {Object.keys(recipients).length === 0 && (
           <Typography>Enter address and amount</Typography>
         )}
@@ -222,7 +230,7 @@ export default function CreateBulkSend() {
               hidden
               type="file"
               accept=".csv"
-            // onChange={handleOnChange}
+              // onChange={handleOnChange}
             />
           </Button>
         </Box>
@@ -359,17 +367,17 @@ export default function CreateBulkSend() {
                                     alignItems="center"
                                   >
                                     {shortenAddress(address)}
-
                                   </Typography>
 
                                   <Typography key={address} mt={1}>
                                     {amount}
                                   </Typography>
-                                </Box>))}
+                                </Box>
+                              ),
+                            )}
                           </Box>
-                        </>)
-                        :
-                        null}
+                        </>
+                      ) : null}
 
                       <Box sx={{ mb: 1, mt: 1 }}>
                         <div>

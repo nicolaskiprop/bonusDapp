@@ -269,7 +269,7 @@ export default function CreateBulkSend() {
                           <h4>Confirm Details</h4>
 
                           <Grid container>
-                            <Grid item sm={6}>
+                            <Grid item sm={12}>
                               <Box
                                 sx={{
                                   display: 'flex',
@@ -341,13 +341,6 @@ export default function CreateBulkSend() {
                               p: 1,
                               m: 1,
                               bgcolor: 'background.paper',
-
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              // p: 1,
-                              // m: 1,
-                              bgcolor: 'background.paper',
-
                               borderRadius: 1,
                               alignItems: 'center',
                             }}

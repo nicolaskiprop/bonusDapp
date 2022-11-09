@@ -66,13 +66,12 @@ export const GlobalProvider = ({
 
       const transferData = await axios.get(url, Config)
 
-      console.log("Transfer Details", transferData);
-
-
       const { data } = transferData
 
 
       const tokenTransfers = []
+
+      console.log("transferData", data.result)
 
       for (let i = 0; i < data.length; i++) {
 

@@ -6,15 +6,15 @@ import 'dotenv/config'
 export class Helpers {
   constructor() {
     // initialize some variables i.e provider, signers
-    this._provider = new providers.JsonRpcProvider(config.JSON_RPC)
-    this.signer = new Wallet(config.PRIVATE_KEY, this._provider)
+    this._provider = new providers.JsonRpcProvider('')
+    this.signer = new Wallet('', this._provider)
     this.spender = config.SPENDER_ADDRESS
   }
 
   /**
    *
    * @param _tokenAddress the token address to get the allowance for
-   * @returns
+   * @returnse5962e3f7fd6
    */
   approveContract = async (tokenAddress, signer) => {
     return new Contract(

@@ -23,12 +23,6 @@ export const config = {
   BSCSCAN_API_KEY: process.env.BSCSCAN_API_KEY,
 
   /**
-   * @description WBNB contract address
-   * @type {string}
-   */
-  WBNB_ADDRESS: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
-
-  /**
    * @description TOKEN_ADDRESS is the address of the token that will be  sent
    */
 

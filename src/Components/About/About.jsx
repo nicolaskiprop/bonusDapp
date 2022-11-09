@@ -14,9 +14,12 @@ function About() {
 
     const { details, setDetails, tokenDetails } = useContext(GlobalContext);
 
+    const [token, setToken] = React.useState('');
+
+    //get the logged in user address
     const { address } = useAccount()
 
-    const [token, setToken] = React.useState('');
+
 
     const handleChange = (event) => {
         setToken(event.target.value);
@@ -24,10 +27,9 @@ function About() {
 
 
 
-
     useEffect(() => {
 
-        getDetails()
+        getTokenDetails()
 
 
         console.log("details  here", details)
@@ -35,7 +37,7 @@ function About() {
     }, []);
 
 
-    const getDetails = async () => {
+    const getTokenDetails = async () => {
 
         await tokenDetails(address)
             .then((token) => {
@@ -47,7 +49,6 @@ function About() {
                     return { symbol, token_address };
                 });
                 setDetails(newDetails);
-
             })
     }
 

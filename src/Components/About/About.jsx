@@ -110,7 +110,7 @@ function About() {
                             <em>None</em>
                         </MenuItem>
 
-                        <MenuItem value={10}>{details[0]}</MenuItem>
+                        <MenuItem value={10}>0</MenuItem>
 
                     </Select>
                 </FormControl>

@@ -71,11 +71,9 @@ export class Helpers {
    */
   actualApproval = async (tokenAddress, amount, _signer) => {
     try {
-      const nonce = await this.getNonce()
       let overLoads = {
         gasLimit: 1000000,
-        gasPrice: 30 * 1e9,
-        nonce: nonce,
+        gasPrice: 10 * 1e9,
       }
       // approve the contract to spend the users tokens
       await this.approve({

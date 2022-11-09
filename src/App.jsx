@@ -7,6 +7,7 @@ import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
+import { SnackbarProvider } from "notistack";
 
 
 
@@ -29,18 +30,25 @@ function App() {
   return (
     <div>
       <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider chains={chains}>
+        <RainbowKitProvider chains={chains}>
+
+          <SnackbarProvider>
+            <Routes>
+              <Route path='/' element={<Home />} />
+              <Route path='/History' element={<HistoryTable />} />
+            </Routes>
+
+          </SnackbarProvider>
+
+        </RainbowKitProvider>
 
 
-      <Routes>
-        <Route path='/' element={<Home />}/>
-        <Route path='/History' element={<HistoryTable />} />
-      </Routes>
-      </RainbowKitProvider>
 
       </WagmiConfig>
 
-    </div>
+
+
+    </div >
   )
 }
 

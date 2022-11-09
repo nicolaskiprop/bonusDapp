@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { GlobalContext } from '../../context';
 import { useAccount } from 'wagmi'
 import Select from '@mui/material/Select';
-import { Box, Button, FormControl, MenuItem, Typography } from '@mui/material'
+import { Button, FormControl, MenuItem } from '@mui/material'
 import { HashLink } from 'react-router-hash-link';
 
 
@@ -19,15 +19,10 @@ function About() {
     //get the logged in user address
     const { address } = useAccount()
 
-    const wallonje  = "0x266fedED59399AFC982EEa44724fCa7Ba31C054f"
-
-
 
     const handleChange = (event) => {
         setToken(event.target.value);
     };
-
-    
 
     useEffect(() => {
 
@@ -41,7 +36,7 @@ function About() {
 
     const getTokenDetails = async () => {
 
-        await tokenDetails(wallonje)
+        await tokenDetails(address)
             .then((token) => {
 
                 //filter out the tokens to specific symbol and balance
@@ -69,7 +64,7 @@ function About() {
                         style={{ textDecoration: 'none' }}
                     >
                         <Button
-                            sx={{ display: 'flex', maxHeight: '100px', color: '#fff',fontFamily:'IBM Plex Mono, monospace', fontWeight:500 }}
+                            sx={{ display: 'flex', maxHeight: '100px', color: '#fff', fontFamily: 'IBM Plex Mono, monospace', fontWeight: 500 }}
                             variant='contained'
                             size='small'
                         >
@@ -111,7 +106,6 @@ function About() {
                         <MenuItem value="">
                             <em>None</em>
                         </MenuItem>
-
 
                         <MenuItem value={10}>0</MenuItem>
 

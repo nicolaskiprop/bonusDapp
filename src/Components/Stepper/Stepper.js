@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { GlobalContext } from '../../context'
 import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
@@ -10,10 +10,11 @@ import { Box, Chip, Container, Divider, Grid } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
-import { Contract, ethers, utils } from 'ethers'
+import { Contract, ethers, providers, utils } from 'ethers'
 import Recipient from './Recipient'
 import { Helpers } from '../helpers/utils'
-import { useSigner } from 'wagmi'
+import { useSigner, useProvider } from 'wagmi'
+import { useSnackbar } from 'notistack'
 import { BULK_SEND_ABI } from '../helpers/constants/bulksendABI'
 import { config } from '../helpers/config/config'
 
@@ -55,14 +56,20 @@ const CustomCard = styled(Paper)(({ theme }) => ({
 export default function CreateBulkSend() {
   //States
   const [activeStep, setActiveStep] = React.useState(0)
-  const [file, setFile] = useState()
-  const [addresses, setAddresses] = useState([])
-  const [amount, setAmount] = useState(0)
 
+  //context
   const { recipients } = useContext(GlobalContext)
 
-  // load and read from a csv file
-  const fileReader = new FileReader()
+  //notification
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+
+  //for displaying alerts messages
+  const displayAlert = (alertType, message) => {
+    closeSnackbar()
+    enqueueSnackbar(message, {
+      variant: alertType,
+    })
+  }
 
   //instatiate helpers
   const HelpersWrapper = new Helpers()
@@ -80,7 +87,21 @@ export default function CreateBulkSend() {
   }
 
   //getting the signer
-  const { data: signer } = useSigner()
+  const { data: signer } = useSigner({
+    onSettled(data, error) {
+      if (data) {
+        displayAlert(
+          'success',
+          `Signer connected successfully ${data._isSigner}`,
+        )
+      } else {
+        displayAlert('info', `Failed to Load signer ${error}`)
+      }
+    },
+  })
+
+  //getting the provider
+  const provider = useProvider()
 
   //function handles the approve of the total amounts to be sent
   const hanldeApproveContract = async () => {
@@ -95,7 +116,22 @@ export default function CreateBulkSend() {
       console.log('Here is the sum', sum)
 
       let tokenAddress = '0x5C46eC0Dd2AF140c24A194D1A091953dec44F05c'
-      await HelpersWrapper.actualApproval(tokenAddress, sum, signer)
+
+      const aprroveTx = await HelpersWrapper.actualApproval(
+        tokenAddress,
+        sum,
+        signer,
+      )
+      enqueueSnackbar(`Approval sent 💵....waitig for metamask confirmation`)
+
+      const txReceipt = await provider.waitForTransaction(aprroveTx.hash, 1)
+
+      if (txReceipt.status) {
+        displayAlert('success', `Approval successful`)
+        handleNext()
+      } else {
+        displayAlert('error', `Approval failed`)
+      }
     } catch (error) {
       console.log(error)
     }
@@ -127,10 +163,7 @@ export default function CreateBulkSend() {
         amounts.push(amount)
       }
 
-      console.log('Here is the details from loop', addresses)
-      console.log('Here is the amounts from loop', amounts)
-
-      const send = await contract2.batchTransfer(
+      const sendTx = await contract2.batchTransfer(
         '0x210f4F7a092CCdc3487B8dAB8e317A6E29aeA720',
         addresses,
         amounts,
@@ -138,6 +171,23 @@ export default function CreateBulkSend() {
           gasLimit: 1000000,
         },
       )
+
+      enqueueSnackbar(
+        `BatchTransfer Submitted 🚀....waitig for metamask confirmation`,
+      )
+
+      const txReceipt = await provider._waitForTransaction(
+        sendTx.hash,
+        1,
+        120000,
+      )
+
+      if (txReceipt.status) {
+        displayAlert('success', `Bulk Transaction is successful`)
+        handleNext()
+      } else {
+        displayAlert('error', `Bulk Transaction failed`)
+      }
     } catch (error) {
       console.log('Error sending tokens', error)
     }
@@ -157,53 +207,7 @@ export default function CreateBulkSend() {
       </Box>
     )
   }
-  const sendBonus = () => {
-    return (
-      <Box>
-        {Object.entries(recipients).map(([address, amount]) => (
-          <Box
-            display="flex"
-            alignItems="center"
-            // gap={2}
-            justifyContent="space-between"
-          >
-            <Typography key={address} mt={1} display="flex" alignItems="center">
-              {shortenAddress(address)}
-              <a
-                rel="noreferrer"
-                href={`https://goerli.etherscan.io/address/${address}`}
-                target="_blank"
-              >
-                <OpenInNewIcon />
-              </a>
-            </Typography>
 
-            <Typography key={address} mt={1}>
-              {amount}
-            </Typography>
-          </Box>
-        ))}
-        {Object.keys(recipients).length === 0 && (
-          <Typography>Enter address and amount</Typography>
-        )}
-      </Box>
-    )
-  }
-
-  // setActiveStep(0)
-
-  const handleOnChange = (e) => {
-    setFile(e.target.files[0])
-  }
-  const handleOnSubmit = (e) => {
-    e.preventDefault()
-    if (file) {
-      fileReader.onload = function (event) {
-        const csvOutput = event.target.result
-      }
-      fileReader.readAsText(file)
-    }
-  }
   // end of csv loads
 
   const addressesTextFields = () => {

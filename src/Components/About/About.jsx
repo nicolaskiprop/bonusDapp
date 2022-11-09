@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { GlobalContext } from '../../context';
 import { useAccount } from 'wagmi'
 import Select from '@mui/material/Select';
-import { Box, Button, FormControl, MenuItem, Typography } from '@mui/material'
+import { Button, FormControl, MenuItem } from '@mui/material'
 import { HashLink } from 'react-router-hash-link';
 
 
@@ -14,39 +14,40 @@ function About() {
 
     const { details, setDetails, tokenDetails } = useContext(GlobalContext);
 
+    const [token, setToken] = React.useState('');
+
+    //get the logged in user address
     const { address } = useAccount()
 
-    const [token, setToken] = React.useState('');
 
     const handleChange = (event) => {
         setToken(event.target.value);
     };
 
-
-
-    console.log("details  here", details)
-
     useEffect(() => {
 
-        tokenDetails(address)
-            .then((token) => {
+        getTokenDetails()
 
-                console.log("token", token)
+
+        console.log("details  here", details)
+
+    }, []);
+
+
+    const getTokenDetails = async () => {
+
+        await tokenDetails(address)
+            .then((token) => {
 
                 //filter out the tokens to specific symbol and balance
                 let newDetails = token.filter(function (detail) {
                     return detail.symbol === "CALO";
-                }).map(function (detail) {
-                    return { detail: detail.balance, details: detail.symbol }
+                }).map(function ({ symbol, token_address }) {
+                    return { symbol, token_address };
                 });
-
                 setDetails(newDetails);
             })
-            .catch((err) => {
-                console.log("Could not Fetch Token Details", err)
-            });
-
-    }, []);
+    }
 
 
     return (
@@ -59,11 +60,11 @@ function About() {
                 </div>
 
                 <div className='tokenaddress2'>
-                    <HashLink to="/History" 
-                    style={{textDecoration:'none'}}
+                    <HashLink to="/History"
+                        style={{ textDecoration: 'none' }}
                     >
                         <Button
-                            sx={{ display: 'flex', maxHeight: '100px', color: '#fff' }}
+                            sx={{ display: 'flex', maxHeight: '100px', color: '#fff', fontFamily: 'IBM Plex Mono, monospace', fontWeight: 500 }}
                             variant='contained'
                             size='small'
                         >
@@ -105,9 +106,9 @@ function About() {
                         <MenuItem value="">
                             <em>None</em>
                         </MenuItem>
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+
+                        <MenuItem value={10}>0</MenuItem>
+
                     </Select>
                 </FormControl>
 

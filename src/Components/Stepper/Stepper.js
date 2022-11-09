@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { GlobalContext } from '../../context'
 import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
@@ -10,10 +10,13 @@ import { Box, Chip, Container, Divider, Grid } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
-import { ethers, utils } from 'ethers'
+import { Contract, ethers, providers, utils } from 'ethers'
 import Recipient from './Recipient'
 import { Helpers } from '../helpers/utils'
-import { useSigner } from 'wagmi'
+import { useSigner, useProvider } from 'wagmi'
+import { useSnackbar } from 'notistack'
+import { BULK_SEND_ABI } from '../helpers/constants/bulksendABI'
+import { config } from '../helpers/config/config'
 
 const steps = [
   {
@@ -30,7 +33,7 @@ const steps = [
   },
   {
     label: 'Send assets',
-    description: 'You are about to send asset to the following wallet(s)'
+    description: 'You are about to send asset to the following wallet(s)',
   },
 ]
 
@@ -53,14 +56,20 @@ const CustomCard = styled(Paper)(({ theme }) => ({
 export default function CreateBulkSend() {
   //States
   const [activeStep, setActiveStep] = React.useState(0)
-  const [file, setFile] = useState()
 
+  //context
   const { recipients } = useContext(GlobalContext)
 
-  // load and read from a csv file
-  const fileReader = new FileReader()
+  //notification
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
-  // console.log('recipients', recipients
+  //for displaying alerts messages
+  const displayAlert = (alertType, message) => {
+    closeSnackbar()
+    enqueueSnackbar(message, {
+      variant: alertType,
+    })
+  }
 
   //instatiate helpers
   const HelpersWrapper = new Helpers()
@@ -78,7 +87,21 @@ export default function CreateBulkSend() {
   }
 
   //getting the signer
-  const { data: signer } = useSigner()
+  const { data: signer } = useSigner({
+    onSettled(data, error) {
+      if (data) {
+        displayAlert(
+          'success',
+          `Signer connected successfully ${data._isSigner}`,
+        )
+      } else {
+        displayAlert('info', `Failed to Load signer ${error}`)
+      }
+    },
+  })
+
+  //getting the provider
+  const provider = useProvider()
 
   //function handles the approve of the total amounts to be sent
   const hanldeApproveContract = async () => {
@@ -93,7 +116,22 @@ export default function CreateBulkSend() {
       console.log('Here is the sum', sum)
 
       let tokenAddress = '0x5C46eC0Dd2AF140c24A194D1A091953dec44F05c'
-      await HelpersWrapper.actualApproval(tokenAddress, sum, signer)
+
+      const aprroveTx = await HelpersWrapper.actualApproval(
+        tokenAddress,
+        sum,
+        signer,
+      )
+      enqueueSnackbar(`Approval sent 💵....waitig for metamask confirmation`)
+
+      const txReceipt = await provider.waitForTransaction(aprroveTx.hash, 1)
+
+      if (txReceipt.status) {
+        displayAlert('success', `Approval successful`)
+        handleNext()
+      } else {
+        displayAlert('error', `Approval failed`)
+      }
     } catch (error) {
       console.log(error)
     }
@@ -103,31 +141,58 @@ export default function CreateBulkSend() {
 
   const handleSendTokens = async () => {
     try {
-      const data = Object.entries(recipients)
-        .map(([addr, amt]) => ({
-          [addr]: utils.parseUnits(amt, 18),
-        }))
-        .forEach(async (item) => {
-          const addr = Object.keys(item)[0]
-          const amt = Object.values(item)[0]
+      const data = Object.entries(recipients).map(([addr, amt]) => ({
+        [addr]: utils.parseUnits(amt, 18),
+      }))
 
-          const contract = HelpersWrapper.sendContract(signer)
+      const contract2 = new Contract(
+        config.TOKEN_TRANSFER,
+        BULK_SEND_ABI,
+        // console.log('Here is the data', addr)
+        signer,
+      )
 
-          const sendTokens = await contract.batchTransfer(
-            '0x5c46ec0dd2af140c24a194d1a091953dec44f05c',
-            addr,
-            amt,
-          )
+      let addresses = []
+      let amounts = []
 
-          console.log('addr', addr)
-          console.log('amt', amt)
-        })
+      for (let i = 0; i < data.length; i++) {
+        const address = Object.keys(data[i])[0]
+        const amount = Object.values(data[i])[0]
+
+        addresses.push(address)
+        amounts.push(amount)
+      }
+
+      const sendTx = await contract2.batchTransfer(
+        '0x210f4F7a092CCdc3487B8dAB8e317A6E29aeA720',
+        addresses,
+        amounts,
+        {
+          gasLimit: 1000000,
+        },
+      )
+
+      enqueueSnackbar(
+        `BatchTransfer Submitted 🚀....waitig for metamask confirmation`,
+      )
+
+      const txReceipt = await provider._waitForTransaction(
+        sendTx.hash,
+        1,
+        120000,
+      )
+
+      if (txReceipt.status) {
+        displayAlert('success', `Bulk Transaction is successful`)
+        handleNext()
+      } else {
+        displayAlert('error', `Bulk Transaction failed`)
+      }
     } catch (error) {
       console.log('Error sending tokens', error)
     }
     return (
       <Box>
-
         {Object.entries(recipients).map(([address, amount]) => (
           <Box display="flex" alignItems="center" gap={2}>
             <Typography key={address} mt={1}>
@@ -142,60 +207,7 @@ export default function CreateBulkSend() {
       </Box>
     )
   }
-  const sendBonus = () => {
-    return (
-      <Box>
-        {Object.entries(recipients).map(
-          ([address, amount]) => (
-            <Box
-              display="flex"
-              alignItems="center"
-              // gap={2}
-              justifyContent="space-between"
-            >
-              <Typography
-                key={address}
-                mt={1}
-                display="flex"
-                alignItems="center"
-              >
-                {shortenAddress(address)}
-                <a
-                  rel="noreferrer"
-                  href={`https://goerli.etherscan.io/address/${address}`}
-                  target="_blank"
-                >
-                  <OpenInNewIcon />
-                </a>
-              </Typography>
 
-              <Typography key={address} mt={1}>
-                {amount}
-              </Typography>
-            </Box>
-          ),
-        )}
-        {Object.keys(recipients).length === 0 && (
-          <Typography>Enter address and amount</Typography>
-        )}
-      </Box>
-    )
-  }
-
-  // setActiveStep(0)
-
-  const handleOnChange = (e) => {
-    setFile(e.target.files[0])
-  }
-  const handleOnSubmit = (e) => {
-    e.preventDefault()
-    if (file) {
-      fileReader.onload = function (event) {
-        const csvOutput = event.target.result
-      }
-      fileReader.readAsText(file)
-    }
-  }
   // end of csv loads
 
   const addressesTextFields = () => {
@@ -215,14 +227,14 @@ export default function CreateBulkSend() {
           <Button
             variant="text"
             size="small"
-            sx={{ fontSize: '12px', fontWeight: 'bold' }}
+            sx={{ fontSize: '14px',  fontFamily: 'IBM Plex Mono, monospace', fontWeight:500  }}
           >
             Upload CSV file
             <input
               hidden
               type="file"
               accept=".csv"
-            // onChange={handleOnChange}
+              // onChange={handleOnChange}
             />
           </Button>
         </Box>
@@ -245,11 +257,11 @@ export default function CreateBulkSend() {
               {steps.map((step, index) => (
                 <Step key={step.label}>
                   <StepLabel>
-                    <h6 style={{ color: 'white' }}>{step.label}</h6>
+                    <h6 style={{ color: 'white', fontSize: 16, fontFamily: 'IBM Plex Mono, monospace', fontWeight:500  }}>{step.label}</h6>
                   </StepLabel>
                   <StepContent>
                     <CustomCard style={{ marginBottom: '30px' }}>
-                      <p style={{ fontSize: 12 }}>{step.description}</p>
+                      <p style={{ fontSize: 16, fontFamily: 'IBM Plex Mono, monospace', fontWeight:500 }}>{step.description}</p>
                       {index === 1 ? addressesTextFields() : null}
                       <Divider sx={{ my: 1 }} />
                       {index === 2 ? (
@@ -257,7 +269,7 @@ export default function CreateBulkSend() {
                           <h4>Confirm Details</h4>
 
                           <Grid container>
-                            <Grid item sm={6}>
+                            <Grid item sm={12}>
                               <Box
                                 sx={{
                                   display: 'flex',
@@ -329,13 +341,6 @@ export default function CreateBulkSend() {
                               p: 1,
                               m: 1,
                               bgcolor: 'background.paper',
-
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              // p: 1,
-                              // m: 1,
-                              bgcolor: 'background.paper',
-
                               borderRadius: 1,
                               alignItems: 'center',
                             }}
@@ -359,17 +364,17 @@ export default function CreateBulkSend() {
                                     alignItems="center"
                                   >
                                     {shortenAddress(address)}
-
                                   </Typography>
 
                                   <Typography key={address} mt={1}>
                                     {amount}
                                   </Typography>
-                                </Box>))}
+                                </Box>
+                              ),
+                            )}
                           </Box>
-                        </>)
-                        :
-                        null}
+                        </>
+                      ) : null}
 
                       <Box sx={{ mb: 1, mt: 1 }}>
                         <div>
@@ -399,8 +404,8 @@ export default function CreateBulkSend() {
                                 ? handleSendTokens
                                 : handleNext
                             }
-                            sx={{ mt: 1, mr: 1, fontSize: 12 }}
-                          >
+                            sx={{ mt: 1, mr: 1,fontSize: '14px',  fontFamily: 'IBM Plex Mono, monospace', fontWeight:500  }}
+                             >
                             {index === steps.length - 1 ? 'SEND' : 'Continue'}
                           </Button>
 
@@ -412,8 +417,7 @@ export default function CreateBulkSend() {
                               mt: 1,
                               mr: 1,
                               visibility: index === 0 ? 'hidden' : 'block',
-                              fontSize: 12,
-                            }}
+                              fontSize: '14px',  fontFamily: 'IBM Plex Mono, monospace', fontWeight:500 }}
                           >
                             BACK
                           </Button>

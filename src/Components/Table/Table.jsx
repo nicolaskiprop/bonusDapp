@@ -19,9 +19,6 @@ export default function HistoryTable() {
     const { address } = useAccount()
 
 
-
-
-
     useEffect(() => {
 
         try {

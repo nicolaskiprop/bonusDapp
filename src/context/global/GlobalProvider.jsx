@@ -9,18 +9,19 @@ export const GlobalProvider = ({
 
   // address => amount
   const [recipients, setRecipients] = useState({});
-  const [transfers, setTransfer] = useState({});
+  const [transfers, setTransfer] = useState([]);
+  const [details, setDetails] = useState([]);
+
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [details, setDetails] = useState({});
 
 
   const Config = {
     headers: {
       'Content-Type': 'application/json',
       'X-API-Key':
-        'suaRJoN9tr6XjAhiuwdCR7MwYBkQKTRlzGWkEyd07e2cP9O4W5EcoNelZS6jmh93',
+        'tF5Psi6kRfrMGKkHs6CuMoMUELy6vd01zIS4DDIO2PHsr3eetglyXv0bmcRYSSmE',
       'Access-Control-Allow-Origin': '*',
     },
   }

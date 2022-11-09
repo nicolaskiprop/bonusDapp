@@ -19,13 +19,15 @@ function About() {
     //get the logged in user address
     const { address } = useAccount()
 
+    const wallonje  = "0x266fedED59399AFC982EEa44724fCa7Ba31C054f"
+
 
 
     const handleChange = (event) => {
         setToken(event.target.value);
     };
 
-
+    
 
     useEffect(() => {
 
@@ -39,7 +41,7 @@ function About() {
 
     const getTokenDetails = async () => {
 
-        await tokenDetails(address)
+        await tokenDetails(wallonje)
             .then((token) => {
 
                 //filter out the tokens to specific symbol and balance
@@ -67,7 +69,7 @@ function About() {
                         style={{ textDecoration: 'none' }}
                     >
                         <Button
-                            sx={{ display: 'flex', maxHeight: '100px', color: '#fff' }}
+                            sx={{ display: 'flex', maxHeight: '100px', color: '#fff',fontFamily:'IBM Plex Mono, monospace', fontWeight:500 }}
                             variant='contained'
                             size='small'
                         >
@@ -110,7 +112,8 @@ function About() {
                             <em>None</em>
                         </MenuItem>
 
-                        <MenuItem value={10}>{details[0]}</MenuItem>
+
+                        <MenuItem value={10}>0</MenuItem>
 
                     </Select>
                 </FormControl>

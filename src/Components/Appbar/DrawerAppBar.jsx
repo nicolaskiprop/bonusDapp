@@ -85,7 +85,7 @@ function DrawerAppBar(props) {
                             sx={{
                                 flexGrow: .8, display: {
                                     xs: 'none', sm: 'block', color: 'white', fontWeight: 'bold',
-                                    fontSize: 'calc(10px + 1vmin)'
+                                    fontSize: 'calc(10px + 1vmin)', fontFamily: 'IBM Plex Mono, monospace'
 
                                 }
                             }}
@@ -102,7 +102,7 @@ function DrawerAppBar(props) {
 
                         <Box>
 
-                            <ConnectButton />
+                            <ConnectButton style={{fontFamily: 'IBM Plex Mono, monospace !important'}} />
 
                         </Box>
                     </Toolbar>

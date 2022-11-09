@@ -227,7 +227,7 @@ export default function CreateBulkSend() {
           <Button
             variant="text"
             size="small"
-            sx={{ fontSize: '12px', fontWeight: 'bold' }}
+            sx={{ fontSize: '14px',  fontFamily: 'IBM Plex Mono, monospace', fontWeight:500  }}
           >
             Upload CSV file
             <input
@@ -257,11 +257,11 @@ export default function CreateBulkSend() {
               {steps.map((step, index) => (
                 <Step key={step.label}>
                   <StepLabel>
-                    <h6 style={{ color: 'white' }}>{step.label}</h6>
+                    <h6 style={{ color: 'white', fontSize: 16, fontFamily: 'IBM Plex Mono, monospace', fontWeight:500  }}>{step.label}</h6>
                   </StepLabel>
                   <StepContent>
                     <CustomCard style={{ marginBottom: '30px' }}>
-                      <p style={{ fontSize: 12 }}>{step.description}</p>
+                      <p style={{ fontSize: 16, fontFamily: 'IBM Plex Mono, monospace', fontWeight:500 }}>{step.description}</p>
                       {index === 1 ? addressesTextFields() : null}
                       <Divider sx={{ my: 1 }} />
                       {index === 2 ? (
@@ -411,8 +411,8 @@ export default function CreateBulkSend() {
                                 ? handleSendTokens
                                 : handleNext
                             }
-                            sx={{ mt: 1, mr: 1, fontSize: 12 }}
-                          >
+                            sx={{ mt: 1, mr: 1,fontSize: '14px',  fontFamily: 'IBM Plex Mono, monospace', fontWeight:500  }}
+                             >
                             {index === steps.length - 1 ? 'SEND' : 'Continue'}
                           </Button>
 
@@ -424,8 +424,7 @@ export default function CreateBulkSend() {
                               mt: 1,
                               mr: 1,
                               visibility: index === 0 ? 'hidden' : 'block',
-                              fontSize: 12,
-                            }}
+                              fontSize: '14px',  fontFamily: 'IBM Plex Mono, monospace', fontWeight:500 }}
                           >
                             BACK
                           </Button>

@@ -9,11 +9,12 @@ export const GlobalProvider = ({
 
   // address => amount
   const [recipients, setRecipients] = useState({});
-  const [transfers, setTransfer] = useState({});
+  const [transfers, setTransfer] = useState([]);
+  const [details, setDetails] = useState([]);
+
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [details, setDetails] = useState({});
 
 
   const Config = {

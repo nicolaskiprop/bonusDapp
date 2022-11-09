@@ -46,7 +46,7 @@ export const GlobalProvider = ({
 
         token.push({ token_address, symbol, balance })
 
-        setDetails(data)
+        setDetails(tokenData)
 
 
       }

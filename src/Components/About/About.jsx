@@ -24,29 +24,32 @@ function About() {
 
 
 
-    console.log("details  here", details)
 
     useEffect(() => {
 
-        tokenDetails(address)
-            .then((token) => {
+        getDetails()
 
-                console.log("token", token)
+
+        console.log("details  here", details)
+
+    }, []);
+
+
+    const getDetails = async () => {
+
+        await tokenDetails(address)
+            .then((token) => {
 
                 //filter out the tokens to specific symbol and balance
                 let newDetails = token.filter(function (detail) {
                     return detail.symbol === "CALO";
-                }).map(function (detail) {
-                    return { detail: detail.balance, details: detail.symbol }
+                }).map(function ({ symbol, token_address }) {
+                    return { symbol, token_address };
                 });
-
                 setDetails(newDetails);
-            })
-            .catch((err) => {
-                console.log("Could not Fetch Token Details", err)
-            });
 
-    }, []);
+            })
+    }
 
 
     return (
@@ -59,8 +62,8 @@ function About() {
                 </div>
 
                 <div className='tokenaddress2'>
-                    <HashLink to="/History" 
-                    style={{textDecoration:'none'}}
+                    <HashLink to="/History"
+                        style={{ textDecoration: 'none' }}
                     >
                         <Button
                             sx={{ display: 'flex', maxHeight: '100px', color: '#fff' }}
@@ -105,9 +108,9 @@ function About() {
                         <MenuItem value="">
                             <em>None</em>
                         </MenuItem>
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+
+                        <MenuItem value={10}>{details[0]}</MenuItem>
+
                     </Select>
                 </FormControl>
 

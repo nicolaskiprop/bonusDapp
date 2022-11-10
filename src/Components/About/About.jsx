@@ -24,12 +24,14 @@ function About() {
         setToken(event.target.value);
     };
 
+    console.log('details', details)
+
     useEffect(() => {
 
-        getTokenDetails()
+        // getTokenDetails()
 
 
-        console.log("details  here", details)
+        // console.log("details  here", details)
 
     }, []);
 
@@ -55,7 +57,7 @@ function About() {
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
                 <div className='tokenaddress'>
-                    <h6 >Token Address</h6>
+                    <h6 >Token Address:  0x5C49...19505c </h6>
 
                 </div>
 
@@ -107,7 +109,7 @@ function About() {
                             <em>None</em>
                         </MenuItem>
 
-                        <MenuItem value={10}>0</MenuItem>
+                        <MenuItem value={10}>MASSAI-TOKEN</MenuItem>
 
                     </Select>
                 </FormControl>

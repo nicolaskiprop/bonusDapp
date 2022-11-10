@@ -18,6 +18,8 @@ export default function HistoryTable() {
 
     const { address } = useAccount()
 
+    console.log(address)
+
 
     useEffect(() => {
 
@@ -42,7 +44,7 @@ export default function HistoryTable() {
     return (
         <TableContainer
             component={Paper}
-            // sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}
+        // sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}
         >
             <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                 <TableHead>
@@ -58,8 +60,8 @@ export default function HistoryTable() {
                 <TableBody>
                     {/* {transfers.map((detail) => ( */}
                     <TableRow
-                        // key={detail.name}
-                        // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    // key={detail.name}
+                    // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                         {/* <TableCell component="th" scope="row">
                             

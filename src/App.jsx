@@ -8,12 +8,13 @@ import { publicProvider } from "wagmi/providers/public";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { SnackbarProvider } from "notistack";
+import { config } from 'dotenv';
 
 
 
 const { chains, provider } = configureChains(
   [chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum, chain.goerli],
-  [alchemyProvider({ apiKey: "0aHuSlzbd5Vvxqr_oCEYZdSyhn9PhiRI" }), publicProvider()]
+  [alchemyProvider({ apiKey: config.REACT_APP_ALCHEMY_ID }), publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({

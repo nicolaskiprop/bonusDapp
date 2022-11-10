@@ -18,6 +18,8 @@ export default function HistoryTable() {
 
     const { address } = useAccount()
 
+    console.log(address)
+
 
     useEffect(() => {
 
@@ -56,20 +58,20 @@ export default function HistoryTable() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {/* {transfers.map((detail) => ( */}
-                    <TableRow
-                        // key={detail.name}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                        <TableCell component="th" scope="row">
-                            {/* {detail.name} */}
-                        </TableCell>
-                        <TableCell align="right">0xhhsdjfgeein343</TableCell>
-                        <TableCell align="right">0x29afc982eea44724fca7ba31c054f</TableCell>
-                        <TableCell align="right">0x4fe1aa8fcaeb89002c6be14261138</TableCell>
-                        <TableCell align="right">0.9 eth</TableCell>
-                    </TableRow>
-                    {/* ))} */}
+                    {transfers.map((detail) => (
+                        <TableRow
+                            key={detail.name}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        >
+                            <TableCell component="th" scope="row">
+                                {detail.name}
+                            </TableCell>
+                            <TableCell align="right">{detail.address}</TableCell>
+                            <TableCell align="right">{detail.to_address}</TableCell>
+                            <TableCell align="right">{detail.block_hash}</TableCell>
+                            <TableCell align="right">{detail.value}</TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
         </TableContainer>

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { config } from '../../Components/helpers/config/config';
 import { GlobalContext } from './GlobalContext';
 
 export const GlobalProvider = ({
@@ -16,12 +17,11 @@ export const GlobalProvider = ({
   const [isLoading, setIsLoading] = useState(false);
 
 
-
   const Config = {
     headers: {
       'Content-Type': 'application/json',
       'X-API-Key':
-        'tF5Psi6kRfrMGKkHs6CuMoMUELy6vd01zIS4DDIO2PHsr3eetglyXv0bmcRYSSmE',
+        config.MORALIS_API_KEY,
       'Access-Control-Allow-Origin': '*',
     },
   }
@@ -80,7 +80,7 @@ export const GlobalProvider = ({
 
         tokenTransfers.push({ transaction_hash, address, to_address })
 
-        setTransfer(data)
+        setTransfer(data.result)
 
 
       }
@@ -90,6 +90,9 @@ export const GlobalProvider = ({
       console.log(error)
     }
   }
+
+  console.log("TRANSFERS", transfers)
+
 
 
   return (
